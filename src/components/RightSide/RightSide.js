@@ -49,9 +49,6 @@ function RightSide() {
         <h1>
           <FontAwesomeIcon icon={faIndianRupeeSign} /> {grandTotal}<sub>(Vat incl.)</sub>
         </h1>
-        <p>
-          Due date: <span>28 jan 2022</span>
-        </p>
         <div className="pdf">
           <h5>Also attach pdf in mail</h5>
           <div>

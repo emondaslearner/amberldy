@@ -12,7 +12,6 @@ import {
 import { TotalAmounts, Valid } from "../../App";
 
 function LeftSide() {
-  const [inputStatus, setInputStatus] = useState(false);
   const [itemError, setItemError] = useState("");
   const [item, setItem] = useState([]);
   const [unit, setUnit] = useState(0);
@@ -123,12 +122,22 @@ function LeftSide() {
         }else{
             setItemError('')
             const allInvoiceInformation = {invoiceNumbers,purchaseNos,issuedDates,dueDates,item,grandTotal,description:description.current.value}
-            fetch('http://localhost:4000',{
+            fetch('http://localhost:4000/',{
                 method: 'POST',
                 body: JSON.stringify(allInvoiceInformation),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
                 },
+            })
+            .then(res => res.json())
+            .then(data => {
+                setSubTotal(0)
+                setVat(0)
+                setItem([])
+                const getInput = document.querySelectorAll('.invoiceInformation .left input')
+                for(let i = 0;i < getInput.length;i++){            
+                    getInput[i].value = '';
+                }
             })
         }
     }
