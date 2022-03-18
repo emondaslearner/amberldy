@@ -1,0 +1,452 @@
+body{
+    background-color:#F5F5F5;;
+}
+.headerMain{
+    width:100%;
+    background-color:#6066FA;
+}
+.header{
+    width:90%;
+    overflow: hidden;
+    display: flex;
+    margin: auto;
+}
+.header .left{
+    width:60%;
+    display: flex;
+
+}
+.header .left li{
+    list-style: none;
+}
+.header .left li a{
+    text-decoration:none;
+    color: white;
+    font-size:15px;
+    margin:0 12px;
+    padding:13px 0;
+    display: block;
+    border-bottom:3px solid transparent;
+    transition: .3s all ease;
+}
+.header .left li a:hover{
+    border-bottom:3px solid #AFB2FC;
+}
+.header .right{
+    width: 40%;
+    display:flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.header .right .option{
+    margin:0 8px;
+    color: white;
+    font-size:18px;
+    cursor: pointer;
+    transition:.3s all ease;
+}
+.header .right .option:hover{
+    color: #ddd;
+}
+.header .right .user{
+    margin-left:15px;
+    font-size:35px;
+}
+.content{
+    width:97%;
+    margin: auto;
+    display: flex;
+    overflow: hidden;
+}
+.leftSide{
+    width:65%;
+    background-color: white;
+    margin-top:20px;
+    box-shadow:2px 2px 10px #ddd;
+    border-radius:20px;
+    margin-bottom:20px;
+    padding-bottom:20px;
+}
+.leftSide .head{
+    display: flex;
+    padding-bottom:20px;
+}
+.leftSide .head .left{
+    width:40%;
+}
+.leftSide .head .left img{
+    width:60%;
+    margin:10px;
+}
+.leftSide .head .right{
+    width:60%;
+    display:flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    margin-right:10px;
+}
+.leftSide .head .right h5{
+    margin: 0;
+    font-size:15px;
+    margin-bottom:5px;
+}
+.leftSide .head .right p{
+    margin: 0;
+    font-size:12px;
+}
+.invoiceInformation{
+    width:95%;
+    margin: auto;
+    background-color:#003EB8;
+    border-radius:20px;
+    display: flex;
+}
+.invoiceInformation .left{
+    width:50%;
+    margin-left:10px;
+}
+.invoiceInformation .left input{
+    background-color:#003EB8;
+    border:0;
+    border:1px solid transparent;
+    color: white;
+    padding:5px;
+    margin-top:5px;
+    margin-left:5px;
+}
+.invoiceInformation .left input::placeholder{
+    color: white;
+}
+.invoiceInformation .left input:focus{
+    outline: none;
+    border:1px solid white;
+}
+.invoiceInformation .left input:focus::placeholder {
+    color: transparent;
+}
+.changePlaceholderColor::placeholder{
+    color: rgb(224, 85, 30) !important;
+}
+.invoiceInformation .left input[type="date"]:hover{
+    cursor: text;
+}
+.invoiceInformation .left input[type="date"]::-webkit-inner-spin-button,
+.invoiceInformation .left input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+}
+.invoiceInformation .left p{
+    color: white;
+    font-size:13px;
+    margin:0;
+}
+.invoiceInformation .left p:first-child{
+    margin-top:10px;
+}
+.invoiceInformation .left p:last-child{
+    margin-bottom:10px;
+}
+.invoiceInformation .left .date{
+    margin-top:20px;
+}
+.invoiceInformation .right{
+    width:50%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+.invoiceInformation .right div{
+    width:50%;
+}
+.invoiceInformation .right p{
+    font-size:13px;
+    color: white;
+}
+.invoice{
+    width:90%;
+    margin: auto;
+}
+.invoice>p{
+    color: red;
+    text-align: center;
+    font-style: italic;
+}
+.invoice table{
+    border-spacing: 0;
+    width:100%;
+}
+.invoice h6{
+    font-size:16px;
+    margin-bottom:20px;
+}
+.invoice table tr{
+    background-color: #F3F1F1
+}
+.invoice table tr:first-child td{
+    padding:10px;
+}
+.invoice table tr td,th{
+    background-color: #F3F1F1;
+    border: none;
+    text-align: left;
+    margin-top:10px;
+    width:20%;
+}
+.invoice table .items td{
+    padding:10px !important;
+}
+.invoice table .close{
+    cursor: pointer;
+}
+.invoice table tr td:nth-child(5){
+    width:15%;
+    padding-left:5px;
+}
+.invoice .addItem input{
+    width:94%;
+    padding:10px 0;
+    background-color:#F3F1F1;
+    border: none;
+    padding-left:10px;
+}
+.invoice input:focus::placeholder{
+    color: transparent;
+}
+.invoice table tr .plus{
+    font-size:20px;
+    color: #7290FA;
+    cursor: pointer;
+    transition: all ease .3s;
+}
+.invoice table tr .plus:hover{
+    color: #466df8;
+}
+.invoice>input{
+    display: block;
+    width:97.5%;
+    margin:0;
+    border:0;
+    background-color:#F3F1F1;
+    padding:10px;
+}
+.invoice input:focus{
+    outline: none;
+}
+.paymentMethod{
+    width:90%;
+    margin: auto;
+    display: flex;
+}
+.paymentMethod .left{
+    width:50%;
+}
+.paymentMethod .left>div{
+    display: flex;
+}
+.paymentMethod .left>div div{
+    width:50%;
+}
+.paymentMethod .left>div div:last-child{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+.paymentMethod .left>div div:last-child img{
+    width:40px;
+    padding:0 10px;
+    border-radius:5px;
+    border:1px solid #ddd;
+}
+.paymentMethod .left>div div h6{
+    margin-bottom:5px;
+    font-size:15px;
+}
+.paymentMethod .left>div div p{
+    margin: 0;
+    font-size: 14px;
+}
+.paymentMethod .left>p{
+    font-size:15px;
+}
+.paymentMethod .left>p span{
+    font-size:16px;
+    font-weight:600;
+    margin-left:10px;
+}
+.paymentMethod .right{
+    width:80%;
+    margin-top:20px;
+    display: flex;
+    justify-content: flex-end;
+
+}
+.paymentMethod .right p:first-child{
+    font-weight: bold;
+}
+.paymentMethod .right p span{
+    font-weight: bold;
+    margin-left:30px;
+}
+.paymentMethod .right div{
+    width:50%;
+}
+.rightSide{
+    width:33%;
+    margin:auto;
+    margin-top: 20px;
+}
+.clientDetails{
+    width:93%;
+    background-color:white;
+    box-shadow: 2px 2px 10px #ddd;
+    border-radius:20px;
+    padding:10px 20px;
+}
+.rightSide .clientDetails>div{
+    display: flex;
+}
+.rightSide .clientDetails>div>div{
+    display: flex;
+}
+.rightSide .clientDetails>div>div p{
+    margin:0;
+}
+.rightSide .clientDetails>div>div h4{
+    margin: 0;
+}
+.rightSide .clientDetails .clientLeft{
+    width:70%;
+}
+.rightSide .clientDetails .clientLeft .user{
+    font-size: 50px;
+    color: #FF0D0D;
+}
+.rightSide .clientDetails .clientLeft div:last-child{
+    margin-top:7px;
+    margin-left:10px;
+}
+.rightSide .clientDetails .clientLeft div:last-child p{
+    font-size:12px;
+}
+.rightSide .clientDetails>div>div:last-child{
+    width:30%;
+    display: flex;
+    justify-content: flex-end;
+}
+.rightSide .setting{
+    margin-right:15px;
+    font-size:30px;
+    margin-top:10px;
+    color: #848080;
+}
+.rightSide .clientDetails>p{
+    margin:0;
+    font-size:13px;
+    margin-top:5px;
+    color:rgb(185, 183, 183);
+}
+.rightSide .clientDetails>h5{
+    margin:0;
+    margin-top:10px;
+}
+.rightSide .clientDetails>button{
+    width:70%;
+    display: block;
+    margin:20px auto;
+    padding:20px 0;
+    border-radius:30px;
+    border:none;
+    background-color: #6066FA;
+    color:white;
+    font-size:18px;
+    cursor: pointer;
+    transition:.3s all ease;
+}
+.rightSide .clientDetails>button:hover{
+    background-color: #7b7fec;
+}
+.rightSide .amountDue{
+    width:93%;
+    background-color:white;
+    box-shadow: 2px 2px 10px #ddd;
+    border-radius:20px;
+    padding:10px 20px;
+    margin-top: 25px;
+}
+.rightSide .amountDue>div{
+    display: flex;
+}
+.rightSide .amountDue>div>div:first-child{
+    width:70%;
+}
+.rightSide .amountDue>div>div:last-child{
+    width:30%;
+    display: flex;
+    justify-content:flex-end;
+}
+.rightSide .amountDue h1{
+    margin: 0;
+}
+.rightSide .amountDue h1 sub{
+    font-size:17px;
+    color: #7C7878;
+}
+.rightSide .amountDue>p{
+    color:#FF5959;
+    font-size:13px;
+    margin:0;
+    margin-top:5px;
+}
+.rightSide .amountDue>p span{
+    color:#FF4E4E;
+    margin-left:10px;
+    font-size:14px;
+}
+.rightSide .amountDue .pdf>div{
+    border-radius:20px;
+    background: #DCDCE0;
+    width:60px !important;
+    height:30px;
+    margin-left: 30px;
+    margin-top:15px;
+    padding:5px;
+    z-index:1;
+}
+.rightSide .amountDue .pdf h5{
+    font-size:15px;
+}
+.rightSide .butt{
+    margin-top:30px;
+    display: flex;
+    width:100%;
+}
+.rightSide .butt button{
+    display: block;
+    margin:30px;
+    border:0;
+    font-size:17px;
+    padding:7px 15px;
+    border-radius:20px;
+    box-shadow: 4px 4px 4px 2px rgba(0, 0, 0, 0.25);
+    background-color: white;
+}
+.rightSide .butt button:first-child{
+    margin-left:60px;
+}
+.rightSide>button{
+    width:70%;
+    display: block;
+    margin:20px auto;
+    padding:20px 0;
+    border-radius:30px;
+    border:none;
+    background-color: #6066FA;
+    color:white;
+    font-size:18px;
+    cursor: pointer;
+    transition:.3s all ease;
+}
+.rightSide>button:hover{
+    background-color: #7b7fec;
+}
