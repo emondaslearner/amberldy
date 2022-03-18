@@ -123,7 +123,13 @@ function LeftSide() {
         }else{
             setItemError('')
             const allInvoiceInformation = {invoiceNumbers,purchaseNos,issuedDates,dueDates,item,grandTotal,description:description.current.value}
-            console.log(allInvoiceInformation)
+            fetch('http://localhost:4000',{
+                method: 'POST',
+                body: JSON.stringify(allInvoiceInformation),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+            })
         }
     }
     setValidStatus(false)
