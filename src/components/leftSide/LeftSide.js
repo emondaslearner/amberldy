@@ -8,8 +8,14 @@ import {
   faIndianRupeeSign,
   faRupee,
   faTimes,
+  faSterlingSign
 } from "@fortawesome/free-solid-svg-icons";
-import { TotalAmounts, Valid } from "../../App";
+import { NameAndEmail, TotalAmounts, Valid } from "../../App";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import Alert from '@mui/material/Alert';
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/material/IconButton';
 
 function LeftSide() {
   const [itemError, setItemError] = useState("");
@@ -19,7 +25,8 @@ function LeftSide() {
   const [total, setTotal] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
   const [vat, setVat] = useState(0);
-
+  const [startDate, setStartDate] = useState(new Date());
+  const [open, setOpen] = React.useState(true);
   //ref of item input
   const refFirst = React.createRef();
   const refSecond = React.createRef();
@@ -30,8 +37,8 @@ function LeftSide() {
   const invoiceNumber = React.createRef()
   const purchaseNo = React.createRef()
   const issuedDate = React.createRef()
-  const dueDate = React.createRef()
   const description = React.createRef()
+  const chris = React.createRef()
 
   //check input empty or not on blur
   const checkInput = (e) => {
@@ -45,13 +52,12 @@ function LeftSide() {
       e.target.classList.remove("changePlaceholderColor");
     }
   };
-
   //add item to invoice
   const addItem = () => {
     if (
-      refFirst.current.value == "" ||
-      refSecond.current.value == "" ||
-      refThird.current.value == ""
+      refFirst.current.value === "" ||
+      refSecond.current.value === "" ||
+      refThird.current.value === ""
     ) {
       setItemError("Please fill all fields");
     } else {
@@ -82,6 +88,15 @@ function LeftSide() {
     setTotal(unit * rate);
   }, [unit, rate]);
 
+  useEffect(() => {
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = today.getFullYear();
+
+    today = mm + '/' + dd + '/' + yyyy;
+    document.querySelector('.issue').value = today;
+  },[])
 
   //remove item from invoice
   const closeItem = (getItem) => {
@@ -95,19 +110,20 @@ function LeftSide() {
 
   //count grand total of items
   const [grandTotal, setGrandTotal] = useContext(TotalAmounts);
-  const totalAmount = subTotal - vat - Math.round((subTotal / 100) * 5);
+  const totalAmount = subTotal - vat;
   setGrandTotal(totalAmount);
 
 
   //send data in database on click
   const [validStatus,setValidStatus] = useContext(Valid)
+  const [nameAndEmail, setNameAndEmail] = useContext(NameAndEmail)
   useEffect(() => {
     const invoiceNumbers = invoiceNumber.current.value;
     const purchaseNos = purchaseNo.current.value;
     const issuedDates = issuedDate.current.value;
-    const dueDates = dueDate.current.value;
+    const chrisDare = chris.current.value;
     if(validStatus == true){
-        if(invoiceNumbers == '' || purchaseNos == '' || issuedDates == '' || dueDates == '' || item.length == 0){
+        if(invoiceNumbers == '' || purchaseNos == ''|| nameAndEmail.name == '' || nameAndEmail.email == '' || chrisDare == '' || issuedDates == '' || item.length == 0){
             const getInput = document.querySelectorAll('.invoiceInformation .left input')
             for(let i = 0;i < getInput.length;i++){
                 if(getInput[i].value == ''){              
@@ -116,13 +132,18 @@ function LeftSide() {
                     getInput[i].classList.add("changePlaceholderColor");
                 }
             }
+            if(chrisDare == ''){
+              document.querySelector('.chris').style.border = "1px solid red";
+              document.querySelector('.chris').placeholder = "Please fill the filed";
+              document.querySelector('.chris').classList.add("changePlaceholderColor");
+            }
             if(item.length == 0){
                 setItemError('Any item have not added')
             }
         }else{
             setItemError('')
-            const allInvoiceInformation = {invoiceNumbers,purchaseNos,issuedDates,dueDates,item,grandTotal,description:description.current.value}
-            fetch('http://localhost:4000/',{
+            const allInvoiceInformation = {invoiceNumbers,chrisDare,name:nameAndEmail.name,email:nameAndEmail.email,dueDate:startDate,purchaseNos,issuedDates,item,grandTotal,description:description.current.value}
+            fetch('https://invoice-generator007.herokuapp.com/',{
                 method: 'POST',
                 body: JSON.stringify(allInvoiceInformation),
                 headers: {
@@ -135,9 +156,15 @@ function LeftSide() {
                 setVat(0)
                 setItem([])
                 const getInput = document.querySelectorAll('.invoiceInformation .left input')
-                for(let i = 0;i < getInput.length;i++){            
+                for(let i = 0;i < 2;i++){            
                     getInput[i].value = '';
                 }
+                document.querySelector('.des').value = ''
+                document.querySelector('.chris').value = ''
+                document.querySelector('.alert').classList.add('showAlert')
+                setTimeout(() => {
+                  document.querySelector('.alert').classList.remove('showAlert')
+                },2000)
             })
         }
     }
@@ -177,28 +204,45 @@ function LeftSide() {
             />
           </p>
           <p className="date">
-            Issued date: <input ref={issuedDate} onBlur={checkInput} type="date" />
+            Issued date: <input className="issue" ref={issuedDate} onBlur={checkInput} type="text" readOnly />
           </p>
-          <p>
-            Due date: <input ref={dueDate} onBlur={checkInput} type="date" />
+          <p className="dueDate">
+            <span>Due date:</span>  <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
           </p>
         </div>
         <div className="right">
           <div>
             <p>Billed to</p>
-            <p>Chris Dare</p>
+            <input ref={chris} onBlur={checkInput} className="chris" placeholder="Enter Chris Dare" type="text" />
             <p>NEXT FIFTEEN COMMUNICATION GROUP PLC</p>
             <p>Bermondsey Street, London, United Kingdom</p>
           </div>
         </div>
       </div>
+      <Alert
+          className="alert"
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+            </IconButton>
+          }
+          sx={{ mb: 2 }}
+        >
+          Thank you! Your Invoice has been submitted
+        </Alert>
       <div className="invoice">
         <h6>Item Details</h6>
         <p>{itemError != "" && itemError}</p>
         <table>
           <tr>
             <td>Item name</td>
-            <td>Unit</td>
+            <td>Unit/Days/Hours</td>
             <td>Rate</td>
             <td>Vat</td>
             <td>Line Total</td>
@@ -212,11 +256,11 @@ function LeftSide() {
                   <tr className="items">
                     <td>{data.itemName}</td>
                     <td>{data.itemUnit}</td>
-                    <td>{data.itemRate}</td>
-                    <td>{data.itemVat}</td>
+                    <td><FontAwesomeIcon className="moneySign" icon={faSterlingSign} />{parseInt(data.itemRate).toFixed(2)}</td>
+                    <td><FontAwesomeIcon className="moneySign" icon={faSterlingSign} />{parseInt(data.itemVat).toFixed(2)}</td>
                     <td>
-                      <FontAwesomeIcon icon={faIndianRupeeSign} />
-                      {data.itemTotal}
+                      <FontAwesomeIcon className="moneySign" icon={faSterlingSign} />
+                      {data.itemTotal.toFixed(2)}
                     </td>
                     <td>
                       <FontAwesomeIcon
@@ -254,8 +298,8 @@ function LeftSide() {
               <input ref={refFourth} placeholder="Enter vat" type="number" />
             </td>
             <td>
-              <FontAwesomeIcon icon={faIndianRupeeSign} />
-              {total != 0 ? total : "0.00"}
+              <FontAwesomeIcon style={{marginBottom:'1.5px'}}className="moneySign" icon={faSterlingSign} />
+              {total != 0 ? total.toFixed(2) : "0.00"}
             </td>
             <td>
               <FontAwesomeIcon
@@ -267,18 +311,11 @@ function LeftSide() {
           </tr>
           <br />
         </table>
-        <input ref={description} placeholder="Description" type="text" />
+        <input className="des" ref={description} placeholder="Description" type="text" />
         <div className="paymentMethod">
           <div className="left">
             <div>
-              <div>
-                <h6>Payment Method</h6>
-                <p>Wire Transfer</p>
-              </div>
-              <div>
-                <h6>Selected</h6>
-                <img src={bankLogo} alt="" />
-              </div>
+              <h6>Payment Details</h6>
             </div>
             <p>
               Account name: <span>Amberley Innovations</span>
@@ -295,29 +332,22 @@ function LeftSide() {
               <p>
                 Sub Total:{" "}
                 <span>
-                  <FontAwesomeIcon icon={faIndianRupeeSign} />
-                  {subTotal != 0 ? subTotal : "0.00"}
-                </span>
-              </p>
-              <p>
-                Discount:{" "}
-                <span>
-                  <FontAwesomeIcon icon={faIndianRupeeSign} />
-                  {subTotal != 0 ? Math.round((subTotal / 100) * 5) : "0.00"}
+                  <FontAwesomeIcon className="moneySign" icon={faSterlingSign} />
+                  {subTotal != 0 ? subTotal.toFixed(2) : "0.00"}
                 </span>
               </p>
               <p>
                 Total Vat:{" "}
                 <span>
-                  <FontAwesomeIcon icon={faIndianRupeeSign} />
-                  {vat != 0 ? vat : "0.00"}
+                  <FontAwesomeIcon className="moneySign" icon={faSterlingSign} />
+                  {vat != 0 ? vat.toFixed(2) : "0.00"}
                 </span>
               </p>
               <p>
                 Total Amount:{" "}
                 <span>
-                  <FontAwesomeIcon icon={faIndianRupeeSign} />
-                  {subTotal != 0 ? totalAmount : "0.00"}
+                  <FontAwesomeIcon className="moneySign" icon={faSterlingSign} />
+                  {subTotal != 0 ? totalAmount.toFixed(2) : "0.00"}
                 </span>
               </p>
             </div>
