@@ -304,6 +304,17 @@ th {
   width: 15%;
   padding-left: 5px;
 }
+.invoice table tr td select{
+  border:none;
+  background:#F3F1F1;
+}
+.invoice table tr td select option{
+  padding:5px 10px !important;
+  display: block;
+}
+.invoice table tr td select:focus{
+  outline:none;
+}
 .invoice .addItem input {
   width: 94%;
   padding: 10px 0;
@@ -446,6 +457,62 @@ th {
   margin: 0;
   margin-top: 10px;
 }
+.rightSide .pdf{
+  display: flex;
+}
+.rightSide .pdf>div{
+  width:50px !important;
+  padding:5px;
+  height:20px;
+  background-color:rgb(206, 202, 202);
+  margin-top:15px;
+  margin-left:20px;
+  overflow: hidden;
+  border-radius:20px;
+  cursor: pointer;
+  position: relative;
+}
+.rightSide .pdf>div button{
+  border-radius:50px;
+  width:20px;
+  height:20px;
+  border:none;
+  position:absolute;
+  left:5px;
+  cursor: pointer;
+  transform:.3s all ease;
+}
+.on{
+  left:35px !important;
+}
+.rightSide .pdfInput{
+  width:40%;
+  margin-left:35%;
+}
+.rightSide .pdfInput::-webkit-file-upload-button {
+  visibility: hidden;
+}
+.rightSide .pdfInput::before {
+  content: 'Select a pdf';
+  display: inline-block;
+  background: linear-gradient(top, #f9f9f9, #e3e3e3);
+  border: 1px solid #999;
+  border-radius: 3px;
+  padding: 5px 8px;
+  outline: none;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  cursor: pointer;
+  text-shadow: 1px 1px #fff;
+  font-weight: 700;
+  font-size: 10pt;
+}
+.rightSide .pdfInput:hover::before {
+  border-color: black;
+}
+.rightSide .pdfInput:active::before {
+  background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+}
 .rightSide .clientDetails > button {
   width: 70%;
   display: block;
@@ -514,4 +581,9 @@ th {
 }
 .rightSide > button:hover {
   background-color: #7b7fec;
+}
+.error{
+  color:red;
+  text-align: center;
+  font-style: italic;
 }

@@ -1,16 +1,12 @@
 import React, { Component, useContext, useEffect, useState } from "react";
 import logo from "../image/Amberley-Logo-blue.png";
-import bankLogo from "../image/38978.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCirclePlus,
-  faClosedCaptioning,
-  faIndianRupeeSign,
-  faRupee,
   faTimes,
   faSterlingSign
 } from "@fortawesome/free-solid-svg-icons";
-import { NameAndEmail, TotalAmounts, Valid } from "../../App";
+import { NameAndEmail, TotalAmounts, Valid ,GetFile } from "../../App";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Alert from '@mui/material/Alert';
@@ -27,6 +23,7 @@ function LeftSide() {
   const [vat, setVat] = useState(0);
   const [startDate, setStartDate] = useState(new Date());
   const [open, setOpen] = React.useState(true);
+  
   //ref of item input
   const refFirst = React.createRef();
   const refSecond = React.createRef();
@@ -40,7 +37,7 @@ function LeftSide() {
   const description = React.createRef()
   const chris = React.createRef()
 
-  //check input empty or not on blur
+  //leftComponent inputs empty or not on blur
   const checkInput = (e) => {
     const data = e.target.value;
     if (data == "") {
@@ -52,34 +49,39 @@ function LeftSide() {
       e.target.classList.remove("changePlaceholderColor");
     }
   };
+
   //add item to invoice
   const addItem = () => {
+    //check data is empty or not in item input
     if (
       refFirst.current.value === "" ||
       refSecond.current.value === "" ||
       refThird.current.value === ""
     ) {
       setItemError("Please fill all fields");
-    } else {
+    }else {
+      //if data is available then add item
+      const countVat = (total/100)*parseFloat(refFourth.current.value)
       const random = Math.ceil(Math.random() * 20000);
       const getItem = {
         id: random,
         itemName: refFirst.current.value,
         itemUnit: refSecond.current.value,
         itemRate: refThird.current.value,
-        itemVat: refFourth.current.value,
-        itemTotal: total,
+        itemVat:countVat ,
+        itemTotal: total + countVat,
       };
+
       setItemError("");
       setItem((prev) => [...prev, getItem]);
       setSubTotal(subTotal + total);
-      getItem.itemVat != 0 && setVat(vat + parseInt(refFourth.current.value));
+      getItem.itemVat !== 0 && setVat(vat + countVat);
+      setTotal(0);
 
       refFirst.current.value = "";
       refSecond.current.value = "";
       refThird.current.value = "";
-      refFourth.current.value = "";
-      setTotal(0);
+      refFourth.current.value = "20";
     }
   };
 
@@ -88,6 +90,7 @@ function LeftSide() {
     setTotal(unit * rate);
   }, [unit, rate]);
 
+  //get current date and set it issue date
   useEffect(() => {
     let today = new Date();
     let dd = String(today.getDate()).padStart(2, '0');
@@ -100,7 +103,7 @@ function LeftSide() {
 
   //remove item from invoice
   const closeItem = (getItem) => {
-    setSubTotal(subTotal - getItem.itemTotal);
+    setSubTotal(subTotal - (getItem.itemTotal - getItem.itemVat))
     getItem.itemVat != 0 && setVat(vat - getItem.itemVat);
     const remove = item.filter((data) => {
       return data.id != getItem.id;
@@ -110,21 +113,30 @@ function LeftSide() {
 
   //count grand total of items
   const [grandTotal, setGrandTotal] = useContext(TotalAmounts);
-  const totalAmount = subTotal - vat;
+  const totalAmount = subTotal + vat;
   setGrandTotal(totalAmount);
 
 
-  //send data in database on click
-  const [validStatus,setValidStatus] = useContext(Valid)
+  //available data in clicked context when click on sent invoice 
+  const [clicked,setClick] = useContext(Valid)
+
+  //get name or email from rightSide component
   const [nameAndEmail, setNameAndEmail] = useContext(NameAndEmail)
+
+  //if select file then get pdf file
+  const [file,setFile] = useContext(GetFile)
+
+  //run then code when click change data of clicked context
   useEffect(() => {
     const invoiceNumbers = invoiceNumber.current.value;
     const purchaseNos = purchaseNo.current.value;
     const issuedDates = issuedDate.current.value;
     const chrisDare = chris.current.value;
-    if(validStatus == true){
+
+    if(clicked == true){
         if(invoiceNumbers == '' || purchaseNos == ''|| nameAndEmail.name == '' || nameAndEmail.email == '' || chrisDare == '' || issuedDates == '' || item.length == 0){
-            const getInput = document.querySelectorAll('.invoiceInformation .left input')
+          //final check data available or not in leftComponent inputs
+          const getInput = document.querySelectorAll('.invoiceInformation .left input')
             for(let i = 0;i < getInput.length;i++){
                 if(getInput[i].value == ''){              
                     getInput[i].style.border = "1px solid red";
@@ -141,17 +153,29 @@ function LeftSide() {
                 setItemError('Any item have not added')
             }
         }else{
+            //if data is available then send it server
             setItemError('')
-            const allInvoiceInformation = {invoiceNumbers,chrisDare,name:nameAndEmail.name,email:nameAndEmail.email,dueDate:startDate,purchaseNos,issuedDates,item,grandTotal,description:description.current.value}
-            fetch('https://invoice-generator007.herokuapp.com/',{
+            console.log(file)
+            const formData = new FormData()
+            formData.append('file', file)
+            formData.append('invoiceNumbers', invoiceNumbers)
+            formData.append('chrisDare', chrisDare)
+            formData.append('name', nameAndEmail.name)
+            formData.append('email', nameAndEmail.email)
+            formData.append('dueDate', startDate)
+            formData.append('purchaseNos', purchaseNos)
+            formData.append('issuedDates', issuedDates)
+            formData.append('item', JSON.stringify(item))
+            formData.append('grandTotal', grandTotal)
+            formData.append('description', description.current.value)
+
+            fetch('http://localhost:4000/',{
                 method: 'POST',
-                body: JSON.stringify(allInvoiceInformation),
-                headers: {
-                    'Content-type': 'application/json; charset=UTF-8',
-                },
+                body:formData
             })
             .then(res => res.json())
             .then(data => {
+                //empty all input and show pop up
                 setSubTotal(0)
                 setVat(0)
                 setItem([])
@@ -168,8 +192,9 @@ function LeftSide() {
             })
         }
     }
-    setValidStatus(false)
-  },[validStatus])
+    //change clicked context data for run then this function on every click
+    setClick(false)
+  },[clicked])
   return (
     <div className="leftSide">
       <div className="head">
@@ -213,7 +238,7 @@ function LeftSide() {
         <div className="right">
           <div>
             <p>Billed to</p>
-            <input ref={chris} onBlur={checkInput} className="chris" placeholder="Enter Chris Dare" type="text" />
+            <input ref={chris} onBlur={checkInput} className="chris" placeholder="Enter Customer Name" type="text" />
             <p>NEXT FIFTEEN COMMUNICATION GROUP PLC</p>
             <p>Bermondsey Street, London, United Kingdom</p>
           </div>
@@ -257,7 +282,7 @@ function LeftSide() {
                     <td>{data.itemName}</td>
                     <td>{data.itemUnit}</td>
                     <td><FontAwesomeIcon className="moneySign" icon={faSterlingSign} />{parseInt(data.itemRate).toFixed(2)}</td>
-                    <td><FontAwesomeIcon className="moneySign" icon={faSterlingSign} />{parseInt(data.itemVat).toFixed(2)}</td>
+                    <td><FontAwesomeIcon className="moneySign" icon={faSterlingSign} />{data.itemVat}</td>
                     <td>
                       <FontAwesomeIcon className="moneySign" icon={faSterlingSign} />
                       {data.itemTotal.toFixed(2)}
@@ -295,7 +320,11 @@ function LeftSide() {
               />
             </td>
             <td>
-              <input ref={refFourth} placeholder="Enter vat" type="number" />
+              <select ref={refFourth} id="">
+                <option value="5">5%</option>
+                <option value="12.5">12.5%</option>
+                <option selected value="20">20%</option>
+              </select>
             </td>
             <td>
               <FontAwesomeIcon style={{marginBottom:'1.5px'}}className="moneySign" icon={faSterlingSign} />
@@ -340,7 +369,7 @@ function LeftSide() {
                 Total Vat:{" "}
                 <span>
                   <FontAwesomeIcon className="moneySign" icon={faSterlingSign} />
-                  {vat != 0 ? vat.toFixed(2) : "0.00"}
+                  {vat != 0 ? vat.toFixed() : "0.00"}
                 </span>
               </p>
               <p>
