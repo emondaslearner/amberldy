@@ -194,7 +194,6 @@ function LeftSide() {
             document.querySelector('.body').style.display = 'block'
             //if data is available then send it server
             setItemError('')
-            console.log(file)
             const formData = new FormData()
             formData.append('file', file)
             formData.append('invoiceNumbers', invoiceNumbers)
@@ -208,7 +207,7 @@ function LeftSide() {
             formData.append('grandTotal', grandTotal)
             formData.append('description', description.current.value)
 
-            fetch('http://localhost:4000/',{
+            fetch('https://invoice-generator-v1.herokuapp.com/',{
                 method: 'POST',
                 body:formData
             })
