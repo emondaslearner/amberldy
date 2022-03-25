@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NameAndEmail, TotalAmounts, Valid,GetFile } from "../../App";
+import progressImg from '../image/output-onlinegiftools.gif'
 
 function RightSide() {
   const [file,setFile] = useContext(GetFile);
@@ -36,11 +37,8 @@ function RightSide() {
     }
     //change click status for run leftComponent functions
     setClicked(true);
+    setPickerStatus(false)
 
-    //empty right inputs
-    document.querySelectorAll('.clientLeft input')[0].value = ''
-    document.querySelectorAll('.clientLeft input')[1].value = ''
-    setFile(null)
   };
 
   //check rightComponent inputs empty or not on blur
@@ -74,7 +72,6 @@ function RightSide() {
       document.querySelector('.pdfName').style.display = 'none'
       document.querySelector('.pdf div').style.background = 'rgb(206, 202, 202)'
       setFileError('')
-      setFile(null)
     }
   },[pickerStatus])
 
@@ -135,6 +132,13 @@ function RightSide() {
         }
         <p className="error">{fileError != '' && fileError}</p>
         <p className="pdfName" style={{color:'black',textAlign:'center'}}>{file != null && file.name}</p>
+      </div>
+      <div className="body">
+        <div className="submitProgress">
+          <img src={progressImg} alt="" />
+          <h3>Please Hold On,</h3>
+          <h3>Submitting your details...</h3>
+        </div>
       </div>
       <button onClick={sendInformation}>Send Invoice</button>
     </div>

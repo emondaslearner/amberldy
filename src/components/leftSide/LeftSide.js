@@ -50,6 +50,7 @@ function LeftSide() {
     }
   };
 
+
   //add item to invoice
   const addItem = () => {
     //check data is empty or not in item input
@@ -69,14 +70,13 @@ function LeftSide() {
         itemUnit: refSecond.current.value,
         itemRate: refThird.current.value,
         itemVat:countVat ,
-        itemTotal: total + countVat,
+        itemTotal: total,
       };
 
       setItemError("");
       setItem((prev) => [...prev, getItem]);
-      setSubTotal(subTotal + total);
-      getItem.itemVat !== 0 && setVat(vat + countVat);
       setTotal(0);
+
 
       refFirst.current.value = "";
       refSecond.current.value = "";
@@ -89,6 +89,46 @@ function LeftSide() {
   useEffect(() => {
     setTotal(unit * rate);
   }, [unit, rate]);
+
+  //count subTotal on change total
+  useEffect(() => {
+    const countVat = (total/100)*parseFloat(refFourth.current.value)
+    if(item.length != 0){
+        let getTo = 0;
+        for(let i = 0;i < item.length;i++){
+          getTo = getTo + item[i].itemTotal
+          setSubTotal(getTo + total)
+        }
+        let countTotalVat = 0;
+        for(let i = 0;i < item.length;i++){
+          countTotalVat = countTotalVat + item[i].itemVat
+          setVat(countTotalVat + countVat)
+        }
+    }else{
+      setSubTotal(total)
+      setVat(countVat)
+    }
+  },[total])
+
+
+  //change vat value on change
+  const changeVat = (e) => {
+    const countVat = (total/100)*parseFloat(refFourth.current.value)
+    if(item.length != 0){
+      let countTotalVat = 0;
+      for(let i = 0;i < item.length;i++){
+        countTotalVat = countTotalVat + item[i].itemVat
+        setVat(countTotalVat + countVat)
+      }
+    }else{
+      setVat(countVat)
+    }
+  }
+
+  //grand total
+  const [grandTotal, setGrandTotal] = useContext(TotalAmounts);
+  const totalAmount = subTotal + vat;
+  setGrandTotal(subTotal + vat);
 
   //get current date and set it issue date
   useEffect(() => {
@@ -103,18 +143,15 @@ function LeftSide() {
 
   //remove item from invoice
   const closeItem = (getItem) => {
-    setSubTotal(subTotal - (getItem.itemTotal - getItem.itemVat))
-    getItem.itemVat != 0 && setVat(vat - getItem.itemVat);
+    setSubTotal((subTotal - (getItem.itemTotal - getItem.itemVat)) - getItem.itemVat)
+    setVat(vat - getItem.itemVat);
     const remove = item.filter((data) => {
       return data.id != getItem.id;
     });
     setItem(remove);
   };
 
-  //count grand total of items
-  const [grandTotal, setGrandTotal] = useContext(TotalAmounts);
-  const totalAmount = subTotal + vat;
-  setGrandTotal(totalAmount);
+
 
 
   //available data in clicked context when click on sent invoice 
@@ -153,6 +190,8 @@ function LeftSide() {
                 setItemError('Any item have not added')
             }
         }else{
+            //add loader
+            document.querySelector('.body').style.display = 'block'
             //if data is available then send it server
             setItemError('')
             console.log(file)
@@ -185,10 +224,16 @@ function LeftSide() {
                 }
                 document.querySelector('.des').value = ''
                 document.querySelector('.chris').value = ''
+                setFile(null)
+                
+                //empty right inputs
+                document.querySelectorAll('.clientLeft input')[0].value = ''
+                document.querySelectorAll('.clientLeft input')[1].value = ''
+                document.querySelector('.body').style.display = 'none'
                 document.querySelector('.alert').classList.add('showAlert')
                 setTimeout(() => {
                   document.querySelector('.alert').classList.remove('showAlert')
-                },2000)
+                },3000)
             })
         }
     }
@@ -320,7 +365,7 @@ function LeftSide() {
               />
             </td>
             <td>
-              <select ref={refFourth} id="">
+              <select onChange={changeVat} ref={refFourth} id="">
                 <option value="5">5%</option>
                 <option value="12.5">12.5%</option>
                 <option selected value="20">20%</option>

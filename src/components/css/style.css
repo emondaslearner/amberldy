@@ -587,3 +587,23 @@ th {
   text-align: center;
   font-style: italic;
 }
+.submitProgress{
+  position:fixed;
+  left:40%;
+  top:20%;
+  color:#4CE7B9;
+}
+.submitProgress h3{
+  text-align: center;
+}
+.body{
+  display: none;
+  width:100%;
+  height:100%;
+  background:#2d2e2e7c;
+  z-index:999;
+  position: fixed;
+  left:0;
+  top:0;
+}
+
