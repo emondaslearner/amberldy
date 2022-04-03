@@ -52,11 +52,17 @@ const Login = () => {
     )
       .then((res) => res.json())
       .then((data) => {
-        setExistsOTP(data.success);
-        setSuccess(data.success);
-        setMessage(data.message);
-        sessionStorage.setItem('login','success')
-        location('/')
+        if(data.success){
+          setExistsOTP(data.success);
+          setSuccess(data.success);
+          setMessage(data.message);
+          sessionStorage.setItem('login','success')
+          location('/')
+        }else{
+          setExistsOTP(data.success);
+          setSuccess(data.success);
+          setMessage(data.message);
+        }
       });
     e.preventDefault();
   };
